@@ -41,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.automirrored.outlined.InsertDriveFile
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
@@ -299,6 +301,24 @@ fun MessageBubble(
                                     imageVector = Icons.Outlined.ContentCopy,
                                     contentDescription = "Copy message",
                                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(4.dp))
+
+                            // Speaker Button (Read Aloud)
+                            val isPlayingSpeechCompact = AntiGemSpeechManager.isSpeaking(message.id)
+                            IconButton(
+                                onClick = {
+                                    AntiGemSpeechManager.speak(context, message.id, message.content)
+                                },
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Icon(
+                                    imageVector = if (isPlayingSpeechCompact) Icons.Filled.Stop else Icons.AutoMirrored.Filled.VolumeUp,
+                                    contentDescription = if (isPlayingSpeechCompact) "Stop speaking" else "Read aloud",
+                                    tint = if (isPlayingSpeechCompact) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                     modifier = Modifier.size(15.dp)
                                 )
                             }
@@ -717,6 +737,24 @@ fun AssistantMessageFooter(
             }
             if (showSelectText) {
                 SelectTextSheet(content = message.content) { showSelectText = false }
+            }
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            // Speaker Button (Read Aloud)
+            val isPlayingSpeech = AntiGemSpeechManager.isSpeaking(message.id)
+            IconButton(
+                onClick = {
+                    AntiGemSpeechManager.speak(context, message.id, message.content)
+                },
+                modifier = Modifier.size(28.dp)
+            ) {
+                Icon(
+                    imageVector = if (isPlayingSpeech) Icons.Filled.Stop else Icons.AutoMirrored.Filled.VolumeUp,
+                    contentDescription = if (isPlayingSpeech) "Stop speaking" else "Read aloud",
+                    tint = if (isPlayingSpeech) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    modifier = Modifier.size(16.dp)
+                )
             }
 
             if (canRetry) Spacer(modifier = Modifier.width(4.dp))
